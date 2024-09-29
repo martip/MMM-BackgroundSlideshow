@@ -532,8 +532,8 @@ Module.register('MMM-BackgroundSlideshow', {
           }
           // TODO: allow for location lookup via openMaps
           const location = {};
-          let lat = EXIF.getTag(image, 'GPSLatitude');
-          let lon = EXIF.getTag(image, 'GPSLongitude');
+          let lat = EXIF.getTag(this, 'GPSLatitude');
+          let lon = EXIF.getTag(this, 'GPSLongitude');
           Log.log(`Latitude: ${lat}, Longitude: ${lon}`);
           // Only display the location if we have both longitute and lattitude
           if (lat && lon) {
