@@ -539,6 +539,7 @@ Module.register('MMM-BackgroundSlideshow', {
             location.lat = lat;
             location.lon = lon;
           }
+          Log.log(location);
           this.updateImageInfo(imageinfo, dateTime, location);
         }
 
