@@ -162,7 +162,6 @@ module.exports = NodeHelper.create({
 
     const image = this.imageList[this.index++];
     Log.info(`BACKGROUNDSLIDESHOW: reading path "${image.path}"`);
-    Log.info(JSON.stringify(image, null, 2));
     self = this;
     this.readFile(image.path, (data) => {
       const returnPayload = {
@@ -172,6 +171,7 @@ module.exports = NodeHelper.create({
         index: self.index,
         total: self.imageList.length
       };
+      Log.info(JSON.stringify(data, null, 2));
       self.sendSocketNotification(
         'BACKGROUNDSLIDESHOW_DISPLAY_IMAGE',
         returnPayload
