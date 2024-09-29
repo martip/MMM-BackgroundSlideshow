@@ -534,12 +534,12 @@ Module.register('MMM-BackgroundSlideshow', {
           const location = {};
           let lat = EXIF.getTag(image, 'GPSLatitude');
           let lon = EXIF.getTag(image, 'GPSLongitude');
+          Log.log(`Latitude: ${lat}, Longitude: ${lon}`);
           // Only display the location if we have both longitute and lattitude
           if (lat && lon) {
             location.lat = lat;
             location.lon = lon;
           }
-          Log.log(location);
           this.updateImageInfo(imageinfo, dateTime, location);
         }
 
