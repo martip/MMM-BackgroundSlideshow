@@ -538,10 +538,12 @@ Module.register('MMM-BackgroundSlideshow', {
           let lonRef = EXIF.getTag(image, 'GPSLongitudeRef');
           // Only display the location if we have both longitute and lattitude
           if (lat && lon) {
-            const latChunks = lat.split(',');
-            const lonChunks = lon.split(',');
-            location.lat = `${latRef} ${latChunks[0]}° ${latChunks[1]}' ${latChunks[2]}"`;
-            location.lon = `${lonRef} ${lonChunks[0]}° ${lonChunks[1]}' ${lonChunks[2]}"`;
+            location.lat = `${latRef} ${lat}`;
+            location.lon = `${lonRef} ${lon}`;
+            // const latChunks = lat.split(',');
+            // const lonChunks = lon.split(',');
+            // location.lat = `${latRef} ${latChunks[0]}° ${latChunks[1]}' ${latChunks[2]}"`;
+            // location.lon = `${lonRef} ${lonChunks[0]}° ${lonChunks[1]}' ${lonChunks[2]}"`;
           }
           this.updateImageInfo(imageinfo, dateTime, location);
         }
