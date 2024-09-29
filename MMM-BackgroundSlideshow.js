@@ -536,7 +536,6 @@ Module.register('MMM-BackgroundSlideshow', {
           let lon = EXIF.getTag(image, 'GPSLongitude');
           let latRef = EXIF.getTag(image, 'GPSLatitudeRef');
           let lonRef = EXIF.getTag(image, 'GPSLongitudeRef');
-          console.log(`${lat} - ${lon} - ${latRef} - ${lonRef}`);
           // Only display the location if we have both longitute and lattitude
           if (lat && lon) {
             const latChunks = lat.split(',');
