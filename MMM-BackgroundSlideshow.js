@@ -539,7 +539,7 @@ Module.register('MMM-BackgroundSlideshow', {
           // Only display the location if we have both longitute and lattitude
           if (lat && lon) {
             const latChunks = lat.split(',');
-            const lonCunks = lon.split(',');
+            const lonChunks = lon.split(',');
             location.lat = `${latRef} ${latChunks[0]}° ${latChunks[1]}' ${latChunks[2]}"`;
             location.lon = `${lonRef} ${lonChunks[0]}° ${lonChunks[1]}' ${lonChunks[2]}"`;
           }
