@@ -306,10 +306,13 @@ module.exports = NodeHelper.create({
       format: 'geocodejson'
     });
 
-    if (result && result.features) {
+    if (result && result.features && result.features.length > 0) {
       // Log.info(JSON.stringify(result.features, null, 2));
-      if (result.features.properties && result.features.properties.geocoding) {
-        const geocoding = result.features.properties.geocoding;
+      if (
+        result.features[0].properties &&
+        result.features[0].properties.geocoding
+      ) {
+        const geocoding = result.features[0].properties.geocoding;
         const descriptionChunks = [];
         let description = '';
         if (geocoding.name) {
