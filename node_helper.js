@@ -306,7 +306,41 @@ module.exports = NodeHelper.create({
       format: 'geocodejson'
     });
 
-    Log.info(result);
+    if (result && result.features) {
+      if (result.features.properties) {
+        if (result.features.properties.osm_key) {
+          const descriptionChunks = [];
+          let description = '';
+          switch (result.features.properties.osm_key) {
+            case 'man_made':
+            case 'tourism':
+              // name, city
+              if (result.features.properties.name) {
+                descriptionChunks.push(result.features.properties.name);
+              }
+              if (result.features.properties.city) {
+                descriptionChunks.push(result.features.properties.city);
+              }
+              break;
+            case 'place':
+              // street, city
+              if (result.features.properties.street) {
+                descriptionChunks.push(result.features.properties.street);
+              }
+              if (result.features.properties.city) {
+                descriptionChunks.push(result.features.properties.city);
+              }
+              break;
+            default:
+              break;
+          }
+          description = descriptionChunks.join(' - ');
+          Log.info({ description });
+        }
+      }
+    } else {
+      // error or nothing found
+    }
   },
 
   // subclass socketNotificationReceived, received notification from module
