@@ -20,7 +20,7 @@ const Log = require('../../js/logger.js');
 const basePath = '/images/';
 const sharp = require('sharp');
 const path = require('path');
-const reverseGeocode = require('./geocode');
+const reverseGeocode = require('./geocode').reverseGeocode;
 
 // the main module helper create
 module.exports = NodeHelper.create({
