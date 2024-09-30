@@ -20,6 +20,7 @@ const Log = require('../../js/logger.js');
 const basePath = '/images/';
 const sharp = require('sharp');
 const path = require('path');
+const reverseGeocode = require('./geocode');
 
 // the main module helper create
 module.exports = NodeHelper.create({
@@ -210,6 +211,7 @@ module.exports = NodeHelper.create({
     }
     this.getNextImage();
   },
+
   resizeImage(input, callback) {
     Log.log(
       `resizing image to max: ${this.config.maxWidth}x${this.config.maxHeight}`
@@ -298,6 +300,21 @@ module.exports = NodeHelper.create({
     }
   },
 
+  async getReverseGeocodeInfo(latitude, longitude, callback) {
+    const result = await reverseGeocode(
+      {
+        latitude,
+        longitude
+      },
+      {
+        'accept-language': 'it-IT',
+        format: 'geocodejson'
+      }
+    );
+
+    Log.info(result);
+  },
+
   // subclass socketNotificationReceived, received notification from module
   socketNotificationReceived(notification, payload) {
     if (notification === 'BACKGROUNDSLIDESHOW_REGISTER_CONFIG') {
@@ -345,6 +362,8 @@ module.exports = NodeHelper.create({
       this.stopTimer();
     } else if (notification === 'BACKGROUNDSLIDESHOW_PLAY') {
       this.startOrRestartTimer();
+    } else if (notification === 'BACKGROUNDSLIDESHOW_REVERSE_GEOCODE') {
+      this.getReverseGeocodeInfo();
     }
   }
 });

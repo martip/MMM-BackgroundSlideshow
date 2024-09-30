@@ -531,21 +531,18 @@ Module.register('MMM-BackgroundSlideshow', {
             }
           }
           // TODO: allow for location lookup via openMaps
-          const location = {};
           let lat = EXIF.getTag(image, 'GPSLatitude');
           let lon = EXIF.getTag(image, 'GPSLongitude');
           let latRef = EXIF.getTag(image, 'GPSLatitudeRef');
           let lonRef = EXIF.getTag(image, 'GPSLongitudeRef');
           // Only display the location if we have both longitute and lattitude
-          if (lat && lon) {
-            location.lat = `${latRef} ${lat}`;
-            location.lon = `${lonRef} ${lon}`;
-            // const latChunks = lat.split(',');
-            // const lonChunks = lon.split(',');
-            // location.lat = `${latRef} ${latChunks[0]}° ${latChunks[1]}' ${latChunks[2]}"`;
-            // location.lon = `${lonRef} ${lonChunks[0]}° ${lonChunks[1]}' ${lonChunks[2]}"`;
+          if (lat && lon && latRef && lonRef) {
+            this.sendSocketNotification('BACKGROUNDSLIDESHOW_REVERSE_GEOCODE', {
+              latitude: { reference: latRef, values: lat },
+              longitude: { reference: lonRef, values: lon }
+            });
           }
-          this.updateImageInfo(imageinfo, dateTime, location);
+          this.updateImageInfo(imageinfo, dateTime);
         }
 
         if (!this.browserSupportsExifOrientationNatively) {
@@ -620,7 +617,7 @@ Module.register('MMM-BackgroundSlideshow', {
     }
   },
 
-  updateImageInfo(imageinfo, imageDate, imageLocation) {
+  updateImageInfo(imageinfo, imageDate) {
     const imageProps = [];
     this.config.imageInfo.forEach((prop) => {
       switch (prop) {
@@ -656,12 +653,6 @@ Module.register('MMM-BackgroundSlideshow', {
           break;
         case 'imagecount':
           imageProps.push(`${imageinfo.index} of ${imageinfo.total}`);
-          break;
-        case 'geo':
-          if (imageLocation && imageLocation.lat && imageLocation.lon) {
-            let location = `${imageLocation.lat}, ${imageLocation.lon}`;
-            imageProps.push(location);
-          }
           break;
         default:
           Log.warn(
