@@ -25,6 +25,7 @@ const dataFetcher = async (params) => {
 
   const parsedRequestResponse = await requestResponse.json();
 
+  Log.info({ parsedRequestResponse });
   return parsedRequestResponse;
 };
 
