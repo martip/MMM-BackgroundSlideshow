@@ -34,12 +34,14 @@ const fetchFromLocalCache = async (params) => {
   let db;
 
   try {
-    db = new Database('./cache.db', { fileMustExist: true });
+    db = new Database(`${this.path}/geocode/cache.db`, { fileMustExist: true });
   } catch (error) {
     // if the database doesn't exist, create it and return
-    db = new Database('./cache.db', { fileMustExist: false });
+    db = new Database(`${this.path}/geocode/cache.db`, {
+      fileMustExist: false
+    });
     db.run(
-      'CREATE TABLE locations(lat REAL NOT NULL, lon REAL NOT NULL, description TEXT, PRIMARY KEY(lat, lon))'
+      'CREATE TABLE locations(lat REAL NOT NULL, lon REAL NOT NULL, description TEXT, PRIMARY KEY(lat, lon));'
     );
     return null;
   }
