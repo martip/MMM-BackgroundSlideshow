@@ -305,7 +305,9 @@ module.exports = NodeHelper.create({
 
     if (description) {
     } else {
-      Log.error(`Reverse geocode failed (${location})`);
+      Log.error(
+        `Reverse geocode failed (${JSON.stringify(location, null, 2)})`
+      );
     }
   },
 

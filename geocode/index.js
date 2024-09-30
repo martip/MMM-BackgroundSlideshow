@@ -47,7 +47,7 @@ const fetchFromLocalCache = (location, modulePath) => {
   return null;
 };
 
-const appendToLocalCache = (location, description) => {
+const appendToLocalCache = (location, description, modulePath) => {
   let db;
 
   try {
@@ -124,7 +124,7 @@ const reverseGeocode = async (location, language, modulePath) => {
         descriptionChunks.push(geocoding.city);
       }
       description = descriptionChunks.join(' - ');
-      appendToLocalCache(parsedParams, description);
+      appendToLocalCache(parsedParams, description, modulePath);
       Log.info('FETCHED FROM OSM!');
       return description;
     }
