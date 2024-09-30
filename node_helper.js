@@ -307,9 +307,9 @@ module.exports = NodeHelper.create({
     });
 
     if (result && result.features) {
+      Log.info(JSON.stringify(result.features.properties, null, 2));
       if (result.features.properties && result.features.properties.geocoding) {
         const geocoding = result.features.properties.geocoding;
-        Log.info(JSON.stringify(geocoding, null, 2));
         if (geocoding.osm_key) {
           const descriptionChunks = [];
           let description = '';
