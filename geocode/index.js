@@ -1,18 +1,5 @@
 const Database = require('better-sqlite3');
 
-/*
-
-CREATE TABLE table_name(
-   column_1 INTEGER NOT NULL,
-   column_2 INTEGER NOT NULL,
-   ...
-   PRIMARY KEY(column_1,column_2,...)
-);
-
-db.run('CREATE TABLE locations(lat REAL NOT NULL, lon REAL NOT NULL, description TEXT, PRIMARY KEY(lat, lon))');
-
-*/
-
 const FETCHER_BASE_URL = 'https://nominatim.openstreetmap.org';
 const FETCHER_USER_AGENT = 'MMM-BackgroundSlideshow';
 
@@ -28,16 +15,18 @@ const convertDMSToDD = (degrees, minutes, seconds, reference) => {
   return round(dd);
 };
 
-const fetchFromLocalCache = async (params) => {
+const fetchFromLocalCache = async (location, modulePath) => {
   // { lat, lon }
 
   let db;
 
   try {
-    db = new Database(`${this.path}/geocode/cache.db`, { fileMustExist: true });
+    db = new Database(`${modulePath}/geocode/cache.db`, {
+      fileMustExist: true
+    });
   } catch (error) {
     // if the database doesn't exist, create it and return
-    db = new Database(`${this.path}/geocode/cache.db`, {
+    db = new Database(`${modulePath}/geocode/cache.db`, {
       fileMustExist: false
     });
     db.run(
@@ -49,7 +38,7 @@ const fetchFromLocalCache = async (params) => {
   const query = db.prepare(
     'SELECT description FROM locations WHERE lat = ? AND lon = ?'
   );
-  const result = query.get(params.lat, params.lon);
+  const result = query.get(location.lat, location.lon);
 
   if (result && result.description) {
     return result.description;
@@ -73,15 +62,15 @@ const fetchFromOpenStreetMap = async (params) => {
   return parsedRequestResponse;
 };
 
-const reverseGeocode = async (params, options) => {
+const reverseGeocode = async (location, language, modulePath) => {
   const urlSearchParams = new URLSearchParams();
 
   // urlSearchParams.append('accept-language', 'it-IT');
   // urlSearchParams.append('format', 'geocodejson');
 
   const parsedParams = {
-    lat: convertDMSToDD(...params.latitude.values, params.latitude.reference),
-    lon: convertDMSToDD(...params.longitude.values, params.longitude.reference)
+    lat: convertDMSToDD(location.latitude.values, params.latitude.reference),
+    lon: convertDMSToDD(location.longitude.values, params.longitude.reference)
   };
 
   const cachedDescription = await fetchFromLocalCache(parsedParams);

@@ -301,9 +301,11 @@ module.exports = NodeHelper.create({
   },
 
   async getReverseGeocodeInfo(location, callback) {
-    const description = await reverseGeocode(location, {
-      'accept-language': 'it-IT'
+    Log.info({
+      location,
+      modulePath: this.path
     });
+    const description = await reverseGeocode(location, 'it-IT', this.path);
 
     if (description) {
       Log.info({ description });
