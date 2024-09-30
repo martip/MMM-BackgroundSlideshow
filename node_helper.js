@@ -307,38 +307,21 @@ module.exports = NodeHelper.create({
     });
 
     if (result && result.features) {
-      Log.info(JSON.stringify(result.features, null, 2));
+      // Log.info(JSON.stringify(result.features, null, 2));
       if (result.features.properties && result.features.properties.geocoding) {
         const geocoding = result.features.properties.geocoding;
-        if (geocoding.osm_key) {
-          const descriptionChunks = [];
-          let description = '';
-          switch (geocoding.osm_key) {
-            case 'man_made':
-            case 'tourism':
-              // name, city
-              if (geocoding.name) {
-                descriptionChunks.push(geocoding.name);
-              }
-              if (geocoding.city) {
-                descriptionChunks.push(geocoding.city);
-              }
-              break;
-            case 'place':
-              // street, city
-              if (geocoding.street) {
-                descriptionChunks.push(geocoding.street);
-              }
-              if (geocoding.city) {
-                descriptionChunks.push(geocoding.city);
-              }
-              break;
-            default:
-              break;
-          }
-          description = descriptionChunks.join(' - ');
-          Log.info({ description });
+        const descriptionChunks = [];
+        let description = '';
+        if (geocoding.name) {
+          descriptionChunks.push(geocoding.name);
+        } else if (geocoding.street) {
+          descriptionChunks.push(geocoding.street);
         }
+        if (geocoding.city) {
+          descriptionChunks.push(geocoding.city);
+        }
+        description = descriptionChunks.join(' - ');
+        Log.info({ description });
       }
     } else {
       // error or nothing found
