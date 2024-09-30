@@ -1,3 +1,5 @@
+const Log = require('../../../js/logger.js');
+
 const FETCHER_BASE_URL = 'https://nominatim.openstreetmap.org';
 const FETCHER_USER_AGENT = 'MMM-BackgroundSlideshow';
 
@@ -27,6 +29,11 @@ const dataFetcher = async (params) => {
 };
 
 const reverseGeocode = async (params, options) => {
+  Log.info({
+    params,
+    options
+  });
+
   const urlSearchParams = new URLSearchParams();
 
   // urlSearchParams.append('accept-language', 'it-IT');
