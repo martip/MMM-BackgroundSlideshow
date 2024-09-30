@@ -26,7 +26,7 @@ const dataFetcher = async (params) => {
   return parsedRequestResponse;
 };
 
-export default async (params, options) => {
+const reverseGeocode = async (params, options) => {
   const urlSearchParams = new URLSearchParams();
 
   // urlSearchParams.append('accept-language', 'it-IT');
@@ -59,3 +59,5 @@ export default async (params, options) => {
 
   return fetchedData;
 };
+
+module.exports = { reverseGeocode };
