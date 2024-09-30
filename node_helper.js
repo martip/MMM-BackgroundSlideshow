@@ -306,6 +306,8 @@ module.exports = NodeHelper.create({
       format: 'geocodejson'
     });
 
+    Log.info({ result });
+
     if (result && result.features) {
       if (result.features.properties) {
         if (result.features.properties.osm_key) {
