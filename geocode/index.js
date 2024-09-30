@@ -59,7 +59,7 @@ const reverseGeocode = async (params, options) => {
 
   const fetchedData = await dataFetcher(urlSearchParams);
 
-  return fetchedData;
+  return fetchedData ? JSON.parse(fetchedData) : null;
 };
 
 module.exports = { reverseGeocode };
