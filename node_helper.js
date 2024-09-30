@@ -300,17 +300,11 @@ module.exports = NodeHelper.create({
     }
   },
 
-  async getReverseGeocodeInfo(latitude, longitude, callback) {
-    const result = await reverseGeocode(
-      {
-        latitude,
-        longitude
-      },
-      {
-        'accept-language': 'it-IT',
-        format: 'geocodejson'
-      }
-    );
+  async getReverseGeocodeInfo(location, callback) {
+    const result = await reverseGeocode(location, {
+      'accept-language': 'it-IT',
+      format: 'geocodejson'
+    });
 
     Log.info(result);
   },
@@ -363,7 +357,7 @@ module.exports = NodeHelper.create({
     } else if (notification === 'BACKGROUNDSLIDESHOW_PLAY') {
       this.startOrRestartTimer();
     } else if (notification === 'BACKGROUNDSLIDESHOW_REVERSE_GEOCODE') {
-      this.getReverseGeocodeInfo({ ...payload });
+      this.getReverseGeocodeInfo(payload);
     }
   }
 });
