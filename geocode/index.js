@@ -31,7 +31,7 @@ const fetchFromLocalCache = (location, modulePath) => {
       fileMustExist: false
     });
     db.exec(
-      'CREATE TABLE locations(lat TEXT NOT NULL, lon TEXT NOT NULL, description TEXT, PRIMARY KEY(lat, lon));'
+      'CREATE TABLE locations(lat REAL NOT NULL, lon REAL NOT NULL, description TEXT, PRIMARY KEY(lat, lon));'
     );
     return null;
   }
@@ -85,8 +85,14 @@ const fetchFromOpenStreetMap = async (params) => {
 
 const reverseGeocode = async (location, language, modulePath) => {
   const parsedParams = {
-    lat: convertDMSToDD(location.latitude.values, location.latitude.reference),
-    lon: convertDMSToDD(location.longitude.values, location.longitude.reference)
+    lat: convertDMSToDD(
+      ...location.latitude.values,
+      location.latitude.reference
+    ),
+    lon: convertDMSToDD(
+      ...location.longitude.values,
+      location.longitude.reference
+    )
   };
 
   const cachedDescription = await fetchFromLocalCache(parsedParams, modulePath);
