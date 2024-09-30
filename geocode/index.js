@@ -1,3 +1,4 @@
+const Log = require('../../../js/logger.js');
 const Database = require('better-sqlite3');
 
 const FETCHER_BASE_URL = 'https://nominatim.openstreetmap.org';
@@ -15,7 +16,7 @@ const convertDMSToDD = (degrees, minutes, seconds, reference) => {
   return round(dd);
 };
 
-const fetchFromLocalCache = async (location, modulePath) => {
+const fetchFromLocalCache = (location, modulePath) => {
   // { lat, lon }
 
   let db;
@@ -46,6 +47,23 @@ const fetchFromLocalCache = async (location, modulePath) => {
   return null;
 };
 
+const appendToLocalCache = (location, description) => {
+  let db;
+
+  try {
+    db = new Database(`${modulePath}/geocode/cache.db`, {
+      fileMustExist: true
+    });
+
+    db.prepare(
+      'INSERT INTO locations (lat, lon, description) VALUES (?, ?, ?)'
+    );
+    db.run(location.lat, location.lon, description);
+  } catch (error) {
+    // where is the db?
+  }
+};
+
 const fetchFromOpenStreetMap = async (params) => {
   const requestInfo = `${FETCHER_BASE_URL}/reverse?${params.toString()}`;
   const requestInit = { headers: { 'User-Agent': FETCHER_USER_AGENT } };
@@ -71,6 +89,7 @@ const reverseGeocode = async (location, language, modulePath) => {
 
   const cachedDescription = await fetchFromLocalCache(parsedParams, modulePath);
   if (cachedDescription) {
+    Log.info('FETCHED FROM CACHE!');
     return cachedDescription;
   }
 
@@ -105,6 +124,8 @@ const reverseGeocode = async (location, language, modulePath) => {
         descriptionChunks.push(geocoding.city);
       }
       description = descriptionChunks.join(' - ');
+      appendToLocalCache(parsedParams, description);
+      Log.info('FETCHED FROM OSM!');
       return description;
     }
   } else {
