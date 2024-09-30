@@ -61,6 +61,7 @@ const appendToLocalCache = (location, description, modulePath) => {
     db.run(location.lat, location.lon, description);
   } catch (error) {
     // where is the db?
+    Log.error(error);
   }
 };
 
@@ -107,7 +108,6 @@ const reverseGeocode = async (location, language, modulePath) => {
   const fetchedData = await fetchFromOpenStreetMap(urlSearchParams);
 
   if (fetchedData && fetchedData.features && fetchedData.features.length > 0) {
-    // Log.info(JSON.stringify(fetchedData.features, null, 2));
     if (
       fetchedData.features[0].properties &&
       fetchedData.features[0].properties.geocoding
