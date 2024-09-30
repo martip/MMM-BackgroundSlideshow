@@ -306,7 +306,7 @@ module.exports = NodeHelper.create({
       format: 'geocodejson'
     });
 
-    Log.info({ result });
+    Log.info(result.features);
 
     if (result && result.features) {
       if (result.features.properties) {
