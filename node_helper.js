@@ -363,7 +363,7 @@ module.exports = NodeHelper.create({
     } else if (notification === 'BACKGROUNDSLIDESHOW_PLAY') {
       this.startOrRestartTimer();
     } else if (notification === 'BACKGROUNDSLIDESHOW_REVERSE_GEOCODE') {
-      this.getReverseGeocodeInfo();
+      this.getReverseGeocodeInfo(payload);
     }
   }
 });
