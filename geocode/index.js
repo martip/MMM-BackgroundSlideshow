@@ -63,32 +63,24 @@ const fetchFromOpenStreetMap = async (params) => {
 };
 
 const reverseGeocode = async (location, language, modulePath) => {
-  const urlSearchParams = new URLSearchParams();
-
-  // urlSearchParams.append('accept-language', 'it-IT');
-  // urlSearchParams.append('format', 'geocodejson');
-
   const parsedParams = {
-    lat: convertDMSToDD(location.latitude.values, params.latitude.reference),
-    lon: convertDMSToDD(location.longitude.values, params.longitude.reference)
+    lat: convertDMSToDD(location.latitude.values, location.latitude.reference),
+    lon: convertDMSToDD(location.longitude.values, location.longitude.reference)
   };
 
-  const cachedDescription = await fetchFromLocalCache(parsedParams);
+  const cachedDescription = await fetchFromLocalCache(parsedParams, modulePath);
   if (cachedDescription) {
     return cachedDescription;
   }
 
+  const urlSearchParams = new URLSearchParams();
+
+  urlSearchParams.append('accept-language', language);
   urlSearchParams.append('format', 'geocodejson');
 
   Object.keys(parsedParams).forEach((key) => {
     if (parsedParams[key]) {
       urlSearchParams.append(key, parsedParams[key]);
-    }
-  });
-
-  Object.keys(options).forEach((key) => {
-    if (options[key]) {
-      urlSearchParams.append(key, options[key]);
     }
   });
 
