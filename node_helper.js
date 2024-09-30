@@ -301,31 +301,12 @@ module.exports = NodeHelper.create({
   },
 
   async getReverseGeocodeInfo(location, callback) {
-    const result = await reverseGeocode(location, {
-      'accept-language': 'it-IT',
-      format: 'geocodejson'
+    const description = await reverseGeocode(location, {
+      'accept-language': 'it-IT'
     });
 
-    if (result && result.features && result.features.length > 0) {
-      // Log.info(JSON.stringify(result.features, null, 2));
-      if (
-        result.features[0].properties &&
-        result.features[0].properties.geocoding
-      ) {
-        const geocoding = result.features[0].properties.geocoding;
-        const descriptionChunks = [];
-        let description = '';
-        if (geocoding.name) {
-          descriptionChunks.push(geocoding.name);
-        } else if (geocoding.street) {
-          descriptionChunks.push(geocoding.street);
-        }
-        if (geocoding.city) {
-          descriptionChunks.push(geocoding.city);
-        }
-        description = descriptionChunks.join(' - ');
-        Log.info({ description });
-      }
+    if (description) {
+      Log.info({ description });
     } else {
       // error or nothing found
     }
