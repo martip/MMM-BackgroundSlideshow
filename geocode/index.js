@@ -31,7 +31,7 @@ const fetchFromLocalCache = (location, modulePath) => {
       fileMustExist: false
     });
     db.exec(
-      'CREATE TABLE locations(lat REAL NOT NULL, lon REAL NOT NULL, description TEXT, PRIMARY KEY(lat, lon));'
+      'CREATE TABLE locations(lat TEXT NOT NULL, lon TEXT NOT NULL, description TEXT, PRIMARY KEY(lat, lon));'
     );
     return null;
   }
@@ -59,7 +59,7 @@ const appendToLocalCache = (location, description, modulePath) => {
       'INSERT INTO locations (lat, lon, description) VALUES (?, ?, ?)'
     );
     const info = statement.run(location.lat, location.lon, description);
-    Log.info(`Inserted ${lat}, ${lon}, ${description}`);
+    Log.info(info);
   } catch (error) {
     // where is the db?
     Log.error(error);
