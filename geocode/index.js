@@ -43,6 +43,7 @@ const fetchFromLocalCache = async (location, modulePath) => {
   if (result && result.description) {
     return result.description;
   }
+  return null;
 };
 
 const fetchFromOpenStreetMap = async (params) => {
