@@ -55,10 +55,11 @@ const appendToLocalCache = (location, description, modulePath) => {
       fileMustExist: true
     });
 
-    db.prepare(
+    const statement = db.prepare(
       'INSERT INTO locations (lat, lon, description) VALUES (?, ?, ?)'
     );
-    db.run(location.lat, location.lon, description);
+    const info = statement.run(location.lat, location.lon, description);
+    Log.info(`Inserted ${lat}, ${lon}, ${description}`);
   } catch (error) {
     // where is the db?
     Log.error(error);
