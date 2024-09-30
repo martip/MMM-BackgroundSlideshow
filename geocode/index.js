@@ -29,7 +29,7 @@ const fetchFromLocalCache = async (location, modulePath) => {
     db = new Database(`${modulePath}/geocode/cache.db`, {
       fileMustExist: false
     });
-    db.run(
+    db.exec(
       'CREATE TABLE locations(lat REAL NOT NULL, lon REAL NOT NULL, description TEXT, PRIMARY KEY(lat, lon));'
     );
     return null;
