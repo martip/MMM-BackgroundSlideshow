@@ -306,31 +306,30 @@ module.exports = NodeHelper.create({
       format: 'geocodejson'
     });
 
-    Log.info(result.features);
-
     if (result && result.features) {
-      if (result.features.properties) {
-        if (result.features.properties.osm_key) {
+      if (result.features.properties && result.features.properties.geocoding) {
+        const geocoding = result.features.properties.geocoding;
+        if (geocoding.osm_key) {
           const descriptionChunks = [];
           let description = '';
-          switch (result.features.properties.osm_key) {
+          switch (geocoding.osm_key) {
             case 'man_made':
             case 'tourism':
               // name, city
-              if (result.features.properties.name) {
-                descriptionChunks.push(result.features.properties.name);
+              if (geocoding.name) {
+                descriptionChunks.push(geocoding.name);
               }
-              if (result.features.properties.city) {
-                descriptionChunks.push(result.features.properties.city);
+              if (geocoding.city) {
+                descriptionChunks.push(geocoding.city);
               }
               break;
             case 'place':
               // street, city
-              if (result.features.properties.street) {
-                descriptionChunks.push(result.features.properties.street);
+              if (geocoding.street) {
+                descriptionChunks.push(geocoding.street);
               }
-              if (result.features.properties.city) {
-                descriptionChunks.push(result.features.properties.city);
+              if (geocoding.city) {
+                descriptionChunks.push(geocoding.city);
               }
               break;
             default:
