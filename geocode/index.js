@@ -83,14 +83,13 @@ const appendToLocalCache = (boundingBox, description, modulePath) => {
     const statement = db.prepare(
       'INSERT INTO locations (latMin, latMax, lonMin, lonMax, description) VALUES (?, ?, ?, ?, ?)'
     );
-    const info = statement.run(
+    statement.run(
       boundingBox[1],
       boundingBox[3],
       boundingBox[0],
       boundingBox[2],
       description
     );
-    Log.info(info);
   } catch (error) {
     // where is the db?
     Log.error(error);
@@ -128,7 +127,9 @@ const reverseGeocode = async (location, language, modulePath) => {
 
   const cachedDescription = await fetchFromLocalCache(parsedParams, modulePath);
   if (cachedDescription) {
-    Log.info('FETCHED FROM CACHE!');
+    Log.info(
+      'BACKGROUNDSLIDESHOW: fetched reverse geocode info from local cache'
+    );
     return cachedDescription;
   }
 
@@ -173,7 +174,9 @@ const reverseGeocode = async (location, language, modulePath) => {
     description = descriptionTokens.join(' - ');
 
     appendToLocalCache(bbox, description, modulePath);
-    Log.info('FETCHED FROM OSM!');
+    Log.info(
+      'BACKGROUNDSLIDESHOW: fetched reverse geocode info from OpenStreetMap'
+    );
     return description;
   }
   return null;

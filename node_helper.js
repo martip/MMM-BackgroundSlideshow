@@ -304,6 +304,7 @@ module.exports = NodeHelper.create({
     const description = await reverseGeocode(location, 'it-IT', this.path);
 
     if (description) {
+      callback(description);
     } else {
       Log.error(
         `Reverse geocode failed (${JSON.stringify(location, null, 2)})`
@@ -359,7 +360,14 @@ module.exports = NodeHelper.create({
     } else if (notification === 'BACKGROUNDSLIDESHOW_PLAY') {
       this.startOrRestartTimer();
     } else if (notification === 'BACKGROUNDSLIDESHOW_REVERSE_GEOCODE') {
-      this.getReverseGeocodeInfo(payload);
+      this.getReverseGeocodeInfo(payload, (description) => {
+        if (description) {
+          this.sendSocketNotification(
+            'BACKGROUNDSLIDESHOW_DISPLAY_LOCATION',
+            description
+          );
+        }
+      });
     }
   }
 });
