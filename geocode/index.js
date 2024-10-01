@@ -16,6 +16,28 @@ const convertDMSToDD = (degrees, minutes, seconds, reference) => {
   return round(dd);
 };
 
+const getMinorPlace = (address) => {
+  if (address.neighbourhood || address.hamlet) {
+    return address.neighbourhood || address.hamlet;
+  }
+  let streetAddress = address.road ? address.road : '';
+  streetAddress += address.house_number ? ` ${address.house_number}` : '';
+  if (streetAddress !== '') {
+    return streetAddress;
+  }
+  return null;
+};
+const getMajorPlace = (address) =>
+  address.city || address.town || address.village || null;
+
+const getPlaceForNamedLocation = (address) =>
+  address.city ||
+  address.town ||
+  address.village ||
+  address.hamlet ||
+  address.neighbourhood ||
+  null;
+
 const fetchFromLocalCache = (location, modulePath) => {
   // { lat, lon }
 
@@ -31,13 +53,13 @@ const fetchFromLocalCache = (location, modulePath) => {
       fileMustExist: false
     });
     db.exec(
-      'CREATE TABLE locations(lat REAL NOT NULL, lon REAL NOT NULL, description TEXT, PRIMARY KEY(lat, lon));'
+      'CREATE TABLE locations(latMin REAL NOT NULL, latMax REAL NOT NULL, lonMin REAL NOT NULL, lonMax REAL NOT NULL, description TEXT, PRIMARY KEY(latMin, latMax, lonMin, lonMax));'
     );
     return null;
   }
 
   const query = db.prepare(
-    'SELECT description FROM locations WHERE lat = ? AND lon = ?'
+    'SELECT description FROM locations WHERE (? BETWEEN latMin AND latMax) AND (? BETWEEN lonMin AND lonMax);'
   );
   const result = query.get(location.lat, location.lon);
 
@@ -47,7 +69,10 @@ const fetchFromLocalCache = (location, modulePath) => {
   return null;
 };
 
-const appendToLocalCache = (location, description, modulePath) => {
+const appendToLocalCache = (boundingBox, description, modulePath) => {
+  if (!boundingBox || boundingBox.length < 4 || !description) {
+    return;
+  }
   let db;
 
   try {
@@ -56,9 +81,15 @@ const appendToLocalCache = (location, description, modulePath) => {
     });
 
     const statement = db.prepare(
-      'INSERT INTO locations (lat, lon, description) VALUES (?, ?, ?)'
+      'INSERT INTO locations (latMin, latMax, lonMin, lonMax, description) VALUES (?, ?, ?, ?, ?)'
     );
-    const info = statement.run(location.lat, location.lon, description);
+    const info = statement.run(
+      boundingBox[1],
+      boundingBox[3],
+      boundingBox[0],
+      boundingBox[2],
+      description
+    );
     Log.info(info);
   } catch (error) {
     // where is the db?
@@ -104,7 +135,7 @@ const reverseGeocode = async (location, language, modulePath) => {
   const urlSearchParams = new URLSearchParams();
 
   urlSearchParams.append('accept-language', language);
-  urlSearchParams.append('format', 'geocodejson');
+  urlSearchParams.append('format', 'geojson');
 
   Object.keys(parsedParams).forEach((key) => {
     if (parsedParams[key]) {
@@ -115,31 +146,37 @@ const reverseGeocode = async (location, language, modulePath) => {
   const fetchedData = await fetchFromOpenStreetMap(urlSearchParams);
 
   if (fetchedData && fetchedData.features && fetchedData.features.length > 0) {
-    if (
-      fetchedData.features[0].properties &&
-      fetchedData.features[0].properties.geocoding
-    ) {
-      const geocoding = fetchedData.features[0].properties.geocoding;
-      const descriptionChunks = [];
-      let description = '';
-      if (geocoding.name) {
-        descriptionChunks.push(geocoding.name);
-      } else if (geocoding.street) {
-        descriptionChunks.push(geocoding.street);
-      }
-      if (geocoding.city) {
-        descriptionChunks.push(geocoding.city);
-      }
-      description = descriptionChunks.join(' - ');
-      appendToLocalCache(parsedParams, description, modulePath);
-      Log.info('FETCHED FROM OSM!');
-      return description;
-    }
-  } else {
-    return null;
-  }
+    const descriptionTokens = [];
+    let description = null;
 
-  // return fetchedData;
+    const [feature] = fetchedData.features;
+    const { properties, bbox } = feature;
+    const { address } = properties;
+
+    if (properties.name) {
+      descriptionTokens.push(properties.name);
+      const place = getPlaceForNamedLocation(address);
+      if (place) {
+        descriptionTokens.push(place);
+      }
+    } else {
+      const majorPlace = getMajorPlace(address);
+      const streetAddress = getMinorPlace(address);
+
+      if (majorPlace) {
+        if (streetAddress) {
+          descriptionTokens.push(streetAddress);
+        }
+        descriptionTokens.push(majorPlace);
+      }
+    }
+    description = descriptionTokens.join(' - ');
+
+    appendToLocalCache(bbox, description, modulePath);
+    Log.info('FETCHED FROM OSM!');
+    return description;
+  }
+  return null;
 };
 
 module.exports = { reverseGeocode };
