@@ -664,7 +664,7 @@ Module.register('MMM-BackgroundSlideshow', {
           break;
         case 'geo':
           // accepted setting, but value will be filled later
-          imageProps.push('<span id="geocode_location"></span><br/>');
+          imageProps.push('<span id="geocode_location"></span>');
           break;
         default:
           Log.warn(
