@@ -169,7 +169,8 @@ Module.register('MMM-BackgroundSlideshow', {
     return {
       en: 'translations/en.json',
       fr: 'translations/fr.json',
-      de: 'translations/de.json'
+      de: 'translations/de.json',
+      it: 'translations/it.json'
     };
   },
 
@@ -244,8 +245,7 @@ Module.register('MMM-BackgroundSlideshow', {
         this.displayImage(payload);
       }
     } else if (notification === 'BACKGROUNDSLIDESHOW_DISPLAY_LOCATION') {
-      // do something
-      console.log(payload);
+      this.imageInfoDiv.innerHTML += `${payload}<br/>`;
     } else if (notification === 'BACKGROUNDSLIDESHOW_FILELIST') {
       // bubble up filelist notifications
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_FILELIST', payload);
