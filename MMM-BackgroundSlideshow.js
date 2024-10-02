@@ -523,7 +523,7 @@ Module.register('MMM-BackgroundSlideshow', {
           if (dateTime !== null) {
             try {
               dateTime = moment(dateTime, 'YYYY:MM:DD HH:mm:ss');
-              dateTime = dateTime.format('dddd MMMM D, YYYY HH:mm');
+              dateTime = dateTime.format('dddd D MMMM YYYY HH:mm');
             } catch (e) {
               Log.log(
                 `Failed to parse dateTime: ${
@@ -533,17 +533,21 @@ Module.register('MMM-BackgroundSlideshow', {
               dateTime = '';
             }
           }
-          // TODO: allow for location lookup via openMaps
-          let lat = EXIF.getTag(image, 'GPSLatitude');
-          let lon = EXIF.getTag(image, 'GPSLongitude');
-          let latRef = EXIF.getTag(image, 'GPSLatitudeRef');
-          let lonRef = EXIF.getTag(image, 'GPSLongitudeRef');
-          // Only display the location if we have both longitute and lattitude
-          if (lat && lon && latRef && lonRef) {
-            this.sendSocketNotification('BACKGROUNDSLIDESHOW_REVERSE_GEOCODE', {
-              latitude: { reference: latRef, values: lat },
-              longitude: { reference: lonRef, values: lon }
-            });
+          if (this.config.imageInfo.includes('geo')) {
+            const lat = EXIF.getTag(image, 'GPSLatitude');
+            const lon = EXIF.getTag(image, 'GPSLongitude');
+            const latRef = EXIF.getTag(image, 'GPSLatitudeRef');
+            const lonRef = EXIF.getTag(image, 'GPSLongitudeRef');
+            // Only display the location if we have both longitute and lattitude
+            if (lat && lon && latRef && lonRef) {
+              this.sendSocketNotification(
+                'BACKGROUNDSLIDESHOW_REVERSE_GEOCODE',
+                {
+                  latitude: { reference: latRef, values: lat },
+                  longitude: { reference: lonRef, values: lon }
+                }
+              );
+            }
           }
           this.updateImageInfo(imageinfo, dateTime);
         }
@@ -656,6 +660,9 @@ Module.register('MMM-BackgroundSlideshow', {
           break;
         case 'imagecount':
           imageProps.push(`${imageinfo.index} of ${imageinfo.total}`);
+          break;
+        case 'geo':
+          // accepted setting, but value will be filled later
           break;
         default:
           Log.warn(
