@@ -186,7 +186,7 @@ Module.register('MMM-BackgroundSlideshow', {
       this.resume();
     }
   },
-  //Setup receiver for global notifications (other modules etc)
+  // Setup receiver for global notifications (other modules etc)
   // Use for example with MMM-Remote-Control API: https://github.com/Jopyth/MMM-Remote-Control/tree/master/API
   // to change image from buttons or curl:
   // curl http://[your ip address]:8080/api/notification/BACKGROUNDSLIDESHOW_PREV or NEXT
@@ -245,7 +245,7 @@ Module.register('MMM-BackgroundSlideshow', {
         this.displayImage(payload);
       }
     } else if (notification === 'BACKGROUNDSLIDESHOW_DISPLAY_LOCATION') {
-      this.imageInfoDiv.innerHTML += `${payload}<br/>`;
+      this.locationInfoSpan.innerHTML += `${payload}`;
     } else if (notification === 'BACKGROUNDSLIDESHOW_FILELIST') {
       // bubble up filelist notifications
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_FILELIST', payload);
@@ -357,6 +357,7 @@ Module.register('MMM-BackgroundSlideshow', {
 
     if (this.config.showImageInfo) {
       this.imageInfoDiv = this.createImageInfoDiv(wrapper);
+      this.locationInfoSpan = this.createLocationInfoSpan(this.imageInfoDiv);
     }
 
     if (this.config.showProgressBar) {
@@ -405,6 +406,14 @@ Module.register('MMM-BackgroundSlideshow', {
     div.className = `info ${this.config.imageInfoLocation}`;
     wrapper.appendChild(div);
     return div;
+  },
+
+  createLocationInfoSpan(wrapper) {
+    const span = document.createElement('span');
+    const br = document.createElement('br');
+    wrapper.appendChild(span);
+    wrapper.appendChild(br);
+    return span;
   },
 
   createProgressbarDiv(wrapper, slideshowSpeed) {
@@ -663,6 +672,7 @@ Module.register('MMM-BackgroundSlideshow', {
           break;
         case 'geo':
           // accepted setting, but value will be filled later
+          imageProps.push(`<span id="geocode_location></span><br/>`);
           break;
         default:
           Log.warn(
@@ -673,12 +683,13 @@ Module.register('MMM-BackgroundSlideshow', {
       }
     });
 
-    let innerHTML = `<header class="infoDivHeader">${this.translate('PICTURE_INFO')}</header>`;
-    imageProps.forEach((val) => {
-      innerHTML += `${val}<br/>`;
-    });
-
-    this.imageInfoDiv.innerHTML = innerHTML;
+    if (imageProps.length > 0) {
+      let innerHTML = `<header class="infoDivHeader">${this.translate('PICTURE_INFO')}</header>`;
+      imageProps.forEach((val) => {
+        innerHTML += `${val}<br/>`;
+      });
+      this.imageInfoDiv.innerHTML = innerHTML;
+    }
   },
 
   resume() {
