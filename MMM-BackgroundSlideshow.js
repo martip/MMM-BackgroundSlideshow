@@ -542,6 +542,7 @@ Module.register('MMM-BackgroundSlideshow', {
               dateTime = '';
             }
           }
+          console.log(this.config.imageInfo);
           if (this.config.imageInfo.includes('geo')) {
             const lat = EXIF.getTag(image, 'GPSLatitude');
             const lon = EXIF.getTag(image, 'GPSLongitude');
