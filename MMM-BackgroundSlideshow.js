@@ -245,7 +245,8 @@ Module.register('MMM-BackgroundSlideshow', {
         this.displayImage(payload);
       }
     } else if (notification === 'BACKGROUNDSLIDESHOW_DISPLAY_LOCATION') {
-      this.locationInfoSpan.innerHTML += `${payload}`;
+      const locationInfoSpan = document.getElementById('geocode_location');
+      locationInfoSpan.innerHTML = `${payload}`;
     } else if (notification === 'BACKGROUNDSLIDESHOW_FILELIST') {
       // bubble up filelist notifications
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_FILELIST', payload);
@@ -357,7 +358,6 @@ Module.register('MMM-BackgroundSlideshow', {
 
     if (this.config.showImageInfo) {
       this.imageInfoDiv = this.createImageInfoDiv(wrapper);
-      this.locationInfoSpan = this.createLocationInfoSpan(this.imageInfoDiv);
     }
 
     if (this.config.showProgressBar) {
@@ -406,14 +406,6 @@ Module.register('MMM-BackgroundSlideshow', {
     div.className = `info ${this.config.imageInfoLocation}`;
     wrapper.appendChild(div);
     return div;
-  },
-
-  createLocationInfoSpan(wrapper) {
-    const span = document.createElement('span');
-    const br = document.createElement('br');
-    wrapper.appendChild(span);
-    wrapper.appendChild(br);
-    return span;
   },
 
   createProgressbarDiv(wrapper, slideshowSpeed) {
@@ -542,7 +534,6 @@ Module.register('MMM-BackgroundSlideshow', {
               dateTime = '';
             }
           }
-          console.log(this.config.imageInfo);
           if (this.config.imageInfo.includes('geo')) {
             const lat = EXIF.getTag(image, 'GPSLatitude');
             const lon = EXIF.getTag(image, 'GPSLongitude');
@@ -673,7 +664,7 @@ Module.register('MMM-BackgroundSlideshow', {
           break;
         case 'geo':
           // accepted setting, but value will be filled later
-          imageProps.push(`<span id="geocode_location></span><br/>`);
+          imageProps.push('<span id="geocode_location"></span><br/>');
           break;
         default:
           Log.warn(
