@@ -14,18 +14,18 @@
 // call in the required classes
 const NodeHelper = require('node_helper');
 const FileSystemImageSlideshow = require('fs');
-const {exec} = require('child_process');
+const { exec } = require('child_process');
 const express = require('express');
 const Log = require('../../js/logger.js');
 const basePath = '/images/';
 const sharp = require('sharp');
 const path = require('path');
+const reverseGeocode = require('./geocode').reverseGeocode;
 
 // the main module helper create
 module.exports = NodeHelper.create({
-
   // subclass start method, clears the initial config array
-  start () {
+  start() {
     this.excludePaths = new Set();
     this.validImageFileExtensions = new Set();
     this.expressInstance = this.expressApp;
@@ -36,7 +36,7 @@ module.exports = NodeHelper.create({
   },
 
   // shuffles an array at random and returns it
-  shuffleArray (array) {
+  shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
       // j is a random index in [0, i].
       const j = Math.floor(Math.random() * (i + 1));
@@ -46,7 +46,7 @@ module.exports = NodeHelper.create({
   },
 
   // sort by filename attribute
-  sortByFilename (a, b) {
+  sortByFilename(a, b) {
     const aL = a.path.toLowerCase();
     const bL = b.path.toLowerCase();
     if (aL > bL) return 1;
@@ -54,7 +54,7 @@ module.exports = NodeHelper.create({
   },
 
   // sort by created attribute
-  sortByCreated (a, b) {
+  sortByCreated(a, b) {
     const aL = a.created;
     const bL = b.created;
     if (aL > bL) return 1;
@@ -62,14 +62,14 @@ module.exports = NodeHelper.create({
   },
 
   // sort by created attribute
-  sortByModified (a, b) {
+  sortByModified(a, b) {
     const aL = a.modified;
     const bL = b.modified;
     if (aL > bL) return 1;
     return -1;
   },
 
-  sortImageList (imageList, sortBy, sortDescending) {
+  sortImageList(imageList, sortBy, sortDescending) {
     let sortedList = imageList;
     switch (sortBy) {
       case 'created':
@@ -96,20 +96,22 @@ module.exports = NodeHelper.create({
   },
 
   // checks there's a valid image file extension
-  checkValidImageFileExtension (filename) {
+  checkValidImageFileExtension(filename) {
     if (!filename.includes('.')) {
       // No file extension.
       return false;
     }
-    const fileExtension = filename.split('.').pop()
-      .toLowerCase();
+    const fileExtension = filename.split('.').pop().toLowerCase();
     return this.validImageFileExtensions.has(fileExtension);
   },
 
   // gathers the image list
-  gatherImageList (config, sendNotification) {
+  gatherImageList(config, sendNotification) {
     // Invalid config. retrieve it again
-    if (typeof config === 'undefined' || !Object.hasOwn(Object(config), 'imagePaths')) {
+    if (
+      typeof config === 'undefined' ||
+      !Object.hasOwn(Object(config), 'imagePaths')
+    ) {
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_REGISTER_CONFIG');
       return;
     }
@@ -122,10 +124,10 @@ module.exports = NodeHelper.create({
     this.imageList = config.randomizeImageOrder
       ? this.shuffleArray(this.imageList)
       : this.sortImageList(
-        this.imageList,
-        config.sortImagesBy,
-        config.sortImagesDescending
-      );
+          this.imageList,
+          config.sortImagesBy,
+          config.sortImagesDescending
+        );
     Log.info(`BACKGROUNDSLIDESHOW: ${this.imageList.length} files found`);
     this.index = 0;
 
@@ -145,7 +147,7 @@ module.exports = NodeHelper.create({
     }
   },
 
-  getNextImage () {
+  getNextImage() {
     if (!this.imageList.length || this.index >= this.imageList.length) {
       // if there are no images or all the images have been displayed, try loading the images again
       this.gatherImageList(this.config);
@@ -181,7 +183,7 @@ module.exports = NodeHelper.create({
   },
 
   // stop timer if it's running
-  stopTimer () {
+  stopTimer() {
     if (this.timer) {
       Log.debug('BACKGROUNDSLIDESHOW: stopping update timer');
       const it = this.timer;
@@ -190,7 +192,7 @@ module.exports = NodeHelper.create({
     }
   },
   // resume timer if it's not running; reset if it is
-  startOrRestartTimer () {
+  startOrRestartTimer() {
     this.stopTimer();
     Log.debug('BACKGROUNDSLIDESHOW: restarting update timer');
     this.timer = setTimeout(() => {
@@ -198,7 +200,7 @@ module.exports = NodeHelper.create({
     }, self.config?.slideshowSpeed || 10000);
   },
 
-  getPrevImage () {
+  getPrevImage() {
     // imageIndex is incremented after displaying an image so -2 is needed to
     // get to previous image index.
     this.index -= 2;
@@ -209,17 +211,20 @@ module.exports = NodeHelper.create({
     }
     this.getNextImage();
   },
-  resizeImage (input, callback) {
-    Log.log(`resizing image to max: ${this.config.maxWidth}x${this.config.maxHeight}`);
+
+  resizeImage(input, callback) {
+    Log.log(
+      `resizing image to max: ${this.config.maxWidth}x${this.config.maxHeight}`
+    );
     const transformer = sharp()
       .rotate()
       .resize({
         width: parseInt(this.config.maxWidth, 10),
         height: parseInt(this.config.maxHeight, 10),
-        fit: 'inside',
+        fit: 'inside'
       })
       .keepMetadata()
-      .jpeg({quality: 80});
+      .jpeg({ quality: 80 });
 
     // Streama image data from file to transformation and finally to buffer
     const outputStream = [];
@@ -239,7 +244,7 @@ module.exports = NodeHelper.create({
       });
   },
 
-  readFile (filepath, callback) {
+  readFile(filepath, callback) {
     const ext = filepath.split('.').pop();
 
     if (this.config.resizeImages) {
@@ -255,7 +260,9 @@ module.exports = NodeHelper.create({
         })
         .on('end', () => {
           const buffer = Buffer.concat(chunks);
-          callback(`data:image/${ext.slice(1)};base64, ${buffer.toString('base64')}`);
+          callback(
+            `data:image/${ext.slice(1)};base64, ${buffer.toString('base64')}`
+          );
         })
         .on('error', (err) => {
           Log.error('Error reading file:', err);
@@ -266,8 +273,10 @@ module.exports = NodeHelper.create({
     }
   },
 
-  getFiles (imagePath, imageList, config) {
-    Log.info(`BACKGROUNDSLIDESHOW: Reading directory "${imagePath}" for images.`);
+  getFiles(imagePath, imageList, config) {
+    Log.info(
+      `BACKGROUNDSLIDESHOW: Reading directory "${imagePath}" for images.`
+    );
     const contents = FileSystemImageSlideshow.readdirSync(imagePath);
     for (let i = 0; i < contents.length; i++) {
       if (this.excludePaths.has(contents[i])) {
@@ -291,13 +300,25 @@ module.exports = NodeHelper.create({
     }
   },
 
+  async getReverseGeocodeInfo(location, callback) {
+    const description = await reverseGeocode(location, 'it-IT', this.path);
+
+    if (description) {
+      callback(description);
+    } else {
+      Log.error(
+        `Reverse geocode failed (${JSON.stringify(location, null, 2)})`
+      );
+    }
+  },
+
   // subclass socketNotificationReceived, received notification from module
-  socketNotificationReceived (notification, payload) {
+  socketNotificationReceived(notification, payload) {
     if (notification === 'BACKGROUNDSLIDESHOW_REGISTER_CONFIG') {
       const config = payload;
       this.expressInstance.use(
         basePath + config.imagePaths[0],
-        express.static(config.imagePaths[0], {maxAge: 3600000})
+        express.static(config.imagePaths[0], { maxAge: 3600000 })
       );
 
       // Create set of excluded subdirectories.
@@ -318,7 +339,9 @@ module.exports = NodeHelper.create({
       }, 200);
     } else if (notification === 'BACKGROUNDSLIDESHOW_PLAY_VIDEO') {
       Log.info('mw got BACKGROUNDSLIDESHOW_PLAY_VIDEO');
-      Log.info(`cmd line: omxplayer --win 0,0,1920,1080 --alpha 180 ${payload[0]}`);
+      Log.info(
+        `cmd line: omxplayer --win 0,0,1920,1080 --alpha 180 ${payload[0]}`
+      );
       exec(
         `omxplayer --win 0,0,1920,1080 --alpha 180 ${payload[0]}`,
         (e, stdout, stderr) => {
@@ -336,6 +359,15 @@ module.exports = NodeHelper.create({
       this.stopTimer();
     } else if (notification === 'BACKGROUNDSLIDESHOW_PLAY') {
       this.startOrRestartTimer();
+    } else if (notification === 'BACKGROUNDSLIDESHOW_REVERSE_GEOCODE') {
+      this.getReverseGeocodeInfo(payload, (description) => {
+        if (description) {
+          this.sendSocketNotification(
+            'BACKGROUNDSLIDESHOW_DISPLAY_LOCATION',
+            description
+          );
+        }
+      });
     }
   }
 });

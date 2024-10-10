@@ -17,10 +17,13 @@
   },
   "license": "MIT",
   "dependencies": {
+    "better-sqlite3": "^11.3.0",
     "exif-js": "^2.3.0",
+    "feather-icons": "^4.29.2",
     "sharp": "^0.33.5"
   },
   "devDependencies": {
+    "@electron/rebuild": "^3.6.0",
     "@eslint/js": "latest",
     "@stylistic/eslint-plugin": "latest",
     "eslint": "^8.57.0",
@@ -30,6 +33,7 @@
   },
   "scripts": {
     "lint": "prettier --check . && eslint .",
-    "lint:fix": "prettier --write . && eslint . --fix"
+    "lint:fix": "prettier --write . && eslint . --fix",
+    "postinstall": "./node_modules/.bin/electron-rebuild"
   }
 }
