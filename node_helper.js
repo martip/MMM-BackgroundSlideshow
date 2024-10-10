@@ -128,6 +128,9 @@ module.exports = NodeHelper.create({
           config.sortImagesBy,
           config.sortImagesDescending
         );
+    // Limit to 10 photos
+    this.imageList = this.imageList.slice(0, 10);
+
     Log.info(`BACKGROUNDSLIDESHOW: ${this.imageList.length} files found`);
     this.index = 0;
 
