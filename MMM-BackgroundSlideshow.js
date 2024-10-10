@@ -549,7 +549,7 @@ Module.register('MMM-BackgroundSlideshow', {
                 'sha-1',
                 imageBuffer
               );
-              const hash = [...Uint8Array(hashBuffer)].reduce(
+              const hash = [...new Uint8Array(hashBuffer)].reduce(
                 (a, b) => a + b.toString(16).padStart(2, '0'),
                 ''
               );
