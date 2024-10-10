@@ -549,7 +549,10 @@ Module.register('MMM-BackgroundSlideshow', {
                 'sha-1',
                 imageBuffer
               );
-              const hash = Buffer.from(hashBuffer).toString('hex');
+              const hash = hashBuffer.reduce(
+                (a, b) => a + b.toString(16).padStart(2, '0'),
+                ''
+              );
               Log.info(`Image hash: ${hash}`);
               this.sendSocketNotification(
                 'BACKGROUNDSLIDESHOW_REVERSE_GEOCODE',
