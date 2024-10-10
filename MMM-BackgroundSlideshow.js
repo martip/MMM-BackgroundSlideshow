@@ -659,6 +659,14 @@ Module.register('MMM-BackgroundSlideshow', {
           }
           imageProps.push(imageName);
           break;
+        case 'album':
+          // /photos/2015/2015-08-14 - Calabria/img_3111.jpg
+          let albumName = imageinfo.path
+            .split('/')
+            .slice(-2)[0]
+            .replace(/\d{4}\-\d{2}\-\d{2} \- /, '');
+          imageProps.push(albumName);
+          break;
         case 'imagecount':
           imageProps.push(`${imageinfo.index} of ${imageinfo.total}`);
           break;
