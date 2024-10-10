@@ -560,6 +560,7 @@ Module.register('MMM-BackgroundSlideshow', {
           const exifOrientation = EXIF.getTag(image, 'Orientation');
           imageDiv.style.transform = this.getImageTransformCss(exifOrientation);
         }
+        return;
       });
       transitionDiv.appendChild(imageDiv);
       this.imagesDiv.appendChild(transitionDiv);
