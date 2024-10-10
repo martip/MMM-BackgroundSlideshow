@@ -148,31 +148,33 @@ const reverseGeocode = async (location, language, modulePath) => {
   const fetchedData = await fetchFromOpenStreetMap(urlSearchParams);
 
   if (fetchedData && fetchedData.features && fetchedData.features.length > 0) {
-    const descriptionTokens = [];
-    let description = null;
+    // const descriptionTokens = [];
+    // let description = null;
 
     const [feature] = fetchedData.features;
     const { properties, bbox } = feature;
     const { address } = properties;
 
-    if (properties.name) {
-      descriptionTokens.push(properties.name);
-      const place = getPlaceForNamedLocation(address);
-      if (place) {
-        descriptionTokens.push(place);
-      }
-    } else {
-      const majorPlace = getMajorPlace(address);
-      const streetAddress = getMinorPlace(address);
+    const description = getMajorPlace(address);
 
-      if (majorPlace) {
-        if (streetAddress) {
-          descriptionTokens.push(streetAddress);
-        }
-        descriptionTokens.push(majorPlace);
-      }
-    }
-    description = descriptionTokens.join(' - ');
+    // if (properties.name) {
+    //   descriptionTokens.push(properties.name);
+    //   const place = getPlaceForNamedLocation(address);
+    //   if (place) {
+    //     descriptionTokens.push(place);
+    //   }
+    // } else {
+    //   const majorPlace = getMajorPlace(address);
+    //   const streetAddress = getMinorPlace(address);
+
+    //   if (majorPlace) {
+    //     if (streetAddress) {
+    //       descriptionTokens.push(streetAddress);
+    //     }
+    //     descriptionTokens.push(majorPlace);
+    //   }
+    // }
+    // description = descriptionTokens.join(' - ');
 
     appendToLocalCache(bbox, description, modulePath);
     Log.info(
