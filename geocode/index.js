@@ -113,17 +113,14 @@ const fetchFromOpenStreetMap = async (params) => {
   return parsedRequestResponse;
 };
 
-const reverseGeocode = async (location, language, modulePath) => {
+const reverseGeocode = async (data, language, modulePath) => {
   const parsedParams = {
-    lat: convertDMSToDD(
-      ...location.latitude.values,
-      location.latitude.reference
-    ),
-    lon: convertDMSToDD(
-      ...location.longitude.values,
-      location.longitude.reference
-    )
+    lat: convertDMSToDD(...data.latitude.values, data.latitude.reference),
+    lon: convertDMSToDD(...data.longitude.values, data.longitude.reference),
+    hash: data.hash
   };
+
+  Log.info(JSON.stringify(parsedParams, null, 2));
 
   const cachedDescription = await fetchFromLocalCache(parsedParams, modulePath);
   if (cachedDescription) {

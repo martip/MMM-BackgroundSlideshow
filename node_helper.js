@@ -303,8 +303,8 @@ module.exports = NodeHelper.create({
     }
   },
 
-  async getReverseGeocodeInfo(location, callback) {
-    const description = await reverseGeocode(location, 'it-IT', this.path);
+  async getReverseGeocodeInfo(data, callback) {
+    const description = await reverseGeocode(data, 'it-IT', this.path);
 
     if (description) {
       callback(description);

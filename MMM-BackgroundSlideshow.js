@@ -541,13 +541,17 @@ Module.register('MMM-BackgroundSlideshow', {
             const lonRef = EXIF.getTag(image, 'GPSLongitudeRef');
             // Only display the location if we have both longitute and lattitude
             if (lat && lon && latRef && lonRef) {
-              this.sendSocketNotification(
-                'BACKGROUNDSLIDESHOW_REVERSE_GEOCODE',
-                {
-                  latitude: { reference: latRef, values: lat },
-                  longitude: { reference: lonRef, values: lon }
-                }
-              );
+              crypto.subtle.digest('sha-1', image).then((hashBuffer) => {
+                const hash = Buffer.from(hashBuffer).toString('hex');
+                this.sendSocketNotification(
+                  'BACKGROUNDSLIDESHOW_REVERSE_GEOCODE',
+                  {
+                    latitude: { reference: latRef, values: lat },
+                    longitude: { reference: lonRef, values: lon },
+                    hash
+                  }
+                );
+              });
             }
           }
           this.updateImageInfo(imageinfo, dateTime);
