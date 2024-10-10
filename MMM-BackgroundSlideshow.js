@@ -246,7 +246,7 @@ Module.register('MMM-BackgroundSlideshow', {
       }
     } else if (notification === 'BACKGROUNDSLIDESHOW_DISPLAY_LOCATION') {
       const locationInfoSpan = document.getElementById('geocode_location');
-      locationInfoSpan.innerHTML = `${this.getIcon('map-pin0', 'dimmed')} ${payload}`;
+      locationInfoSpan.innerHTML = `${this.getIcon('map-pin', 'dimmed')} ${payload}`;
     } else if (notification === 'BACKGROUNDSLIDESHOW_FILELIST') {
       // bubble up filelist notifications
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_FILELIST', payload);
