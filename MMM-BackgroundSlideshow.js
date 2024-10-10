@@ -418,7 +418,7 @@ Module.register('MMM-BackgroundSlideshow', {
     div.appendChild(inner);
     wrapper.appendChild(div);
   },
-  async displayImage(imageinfo) {
+  displayImage(imageinfo) {
     const mwLc = imageinfo.path.toLowerCase();
     if (mwLc.endsWith('.mp4') || mwLc.endsWith('.m4v')) {
       const payload = [imageinfo.path, 'PLAY'];
@@ -431,7 +431,7 @@ Module.register('MMM-BackgroundSlideshow', {
     }
 
     const image = new Image();
-    image.onload = () => {
+    image.onload = async () => {
       // check if there are more than 2 elements and remove the first one
       if (this.imagesDiv.childNodes.length > 1) {
         this.imagesDiv.removeChild(this.imagesDiv.childNodes[0]);
