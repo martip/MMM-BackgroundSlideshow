@@ -203,7 +203,7 @@ Module.register('MMM-BackgroundSlideshow', {
     }
   },
   // the socket handler from node_helper.js
-  socketNotificationReceived(notification, payload) {
+  async socketNotificationReceived(notification, payload) {
     // if an update was received
 
     // check this is for this module based on the woeid
@@ -242,7 +242,7 @@ Module.register('MMM-BackgroundSlideshow', {
     } else if (notification === 'BACKGROUNDSLIDESHOW_DISPLAY_IMAGE') {
       // check this is for this module based on the woeid
       if (payload.identifier === this.identifier) {
-        this.displayImage(payload);
+        await this.displayImage(payload);
       }
     } else if (notification === 'BACKGROUNDSLIDESHOW_DISPLAY_LOCATION') {
       const locationInfoSpan = document.getElementById('geocode_location');
@@ -517,7 +517,7 @@ Module.register('MMM-BackgroundSlideshow', {
         }
       }
 
-      EXIF.getData(image, async () => {
+      await EXIF.getData(image, async () => {
         if (this.config.showImageInfo) {
           let dateTime = EXIF.getTag(image, 'DateTimeOriginal');
           // attempt to parse the date if possible
@@ -572,9 +572,9 @@ Module.register('MMM-BackgroundSlideshow', {
     });
   },
 
-  updateImage(backToPreviousImage = false, imageToDisplay = null) {
+  async updateImage(backToPreviousImage = false, imageToDisplay = null) {
     if (imageToDisplay) {
-      this.displayImage({
+      await this.displayImage({
         path: imageToDisplay,
         data: imageToDisplay,
         index: 1,
@@ -591,7 +591,7 @@ Module.register('MMM-BackgroundSlideshow', {
       }
 
       imageToDisplay = this.imageList.splice(this.imageIndex, 1);
-      this.displayImage({
+      await his.displayImage({
         path: imageToDisplay[0],
         data: imageToDisplay[0],
         index: 1,
