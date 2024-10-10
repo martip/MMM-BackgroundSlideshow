@@ -418,7 +418,7 @@ Module.register('MMM-BackgroundSlideshow', {
     div.appendChild(inner);
     wrapper.appendChild(div);
   },
-  displayImage(imageinfo) {
+  async displayImage(imageinfo) {
     const mwLc = imageinfo.path.toLowerCase();
     if (mwLc.endsWith('.mp4') || mwLc.endsWith('.m4v')) {
       const payload = [imageinfo.path, 'PLAY'];
