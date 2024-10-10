@@ -38,7 +38,7 @@ const getPlaceForNamedLocation = (address) =>
   address.neighbourhood ||
   null;
 
-const fetchFromLocalCache = (location, modulePath) => {
+const fetchFromLocalCache = (data, modulePath) => {
   // { lat, lon }
 
   let db;
@@ -55,21 +55,36 @@ const fetchFromLocalCache = (location, modulePath) => {
     db.exec(
       'CREATE TABLE locations(latMin REAL NOT NULL, latMax REAL NOT NULL, lonMin REAL NOT NULL, lonMax REAL NOT NULL, description TEXT, PRIMARY KEY(latMin, latMax, lonMin, lonMax));'
     );
+    db.exec(
+      'CREATE TABLE images(hash TEXT, description TEXT, PRIMARY KEY(hash));'
+    );
     return null;
+  }
+
+  const hashQuery = db.prepare(
+    'SELECT description FROM images WHERE hash = ?;'
+  );
+  const hashResult = hashQuery.get(data.hash);
+  if (hashResult && hashResult.description) {
+    return hashResult.description;
   }
 
   const query = db.prepare(
     'SELECT description FROM locations WHERE (? BETWEEN latMin AND latMax) AND (? BETWEEN lonMin AND lonMax);'
   );
-  const result = query.get(location.lat, location.lon);
+  const result = query.get(data.lat, data.lon);
 
   if (result && result.description) {
+    const hashInsert = db.prepare(
+      'INSERT INTO images(hash, description) VALUES(?, ?);'
+    );
+    hashInsert.run(data.hash, result.description);
     return result.description;
   }
   return null;
 };
 
-const appendToLocalCache = (boundingBox, description, modulePath) => {
+const appendToLocalCache = (boundingBox, description, hash, modulePath) => {
   if (!boundingBox || boundingBox.length < 4 || !description) {
     return;
   }
@@ -90,6 +105,11 @@ const appendToLocalCache = (boundingBox, description, modulePath) => {
       boundingBox[2],
       description
     );
+
+    const hashInsert = db.prepare(
+      'INSERT INTO images(hash, description) VALUES(?, ?);'
+    );
+    hashInsert.run(hash, description);
   } catch (error) {
     // where is the db?
     Log.error(error);
@@ -119,8 +139,6 @@ const reverseGeocode = async (data, language, modulePath) => {
     lon: convertDMSToDD(...data.longitude.values, data.longitude.reference),
     hash: data.hash
   };
-
-  Log.info(JSON.stringify(parsedParams, null, 2));
 
   const cachedDescription = await fetchFromLocalCache(parsedParams, modulePath);
   if (cachedDescription) {
@@ -173,7 +191,7 @@ const reverseGeocode = async (data, language, modulePath) => {
     // }
     // description = descriptionTokens.join(' - ');
 
-    appendToLocalCache(bbox, description, modulePath);
+    appendToLocalCache(bbox, description, data.hash, modulePath);
     Log.info(
       'BACKGROUNDSLIDESHOW: fetched reverse geocode info from OpenStreetMap'
     );

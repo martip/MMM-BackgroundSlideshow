@@ -553,7 +553,6 @@ Module.register('MMM-BackgroundSlideshow', {
                 (a, b) => a + b.toString(16).padStart(2, '0'),
                 ''
               );
-              Log.info(`Image hash: ${hash}`);
               this.sendSocketNotification(
                 'BACKGROUNDSLIDESHOW_REVERSE_GEOCODE',
                 {
