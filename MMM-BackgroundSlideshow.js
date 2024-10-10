@@ -591,7 +591,7 @@ Module.register('MMM-BackgroundSlideshow', {
       }
 
       imageToDisplay = this.imageList.splice(this.imageIndex, 1);
-      await his.displayImage({
+      await this.displayImage({
         path: imageToDisplay[0],
         data: imageToDisplay[0],
         index: 1,
