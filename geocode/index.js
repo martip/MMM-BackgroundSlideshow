@@ -137,6 +137,7 @@ const reverseGeocode = async (location, language, modulePath) => {
 
   urlSearchParams.append('accept-language', language);
   urlSearchParams.append('format', 'geojson');
+  urlSearchParams.appen('zoom', '15');
 
   Object.keys(parsedParams).forEach((key) => {
     if (parsedParams[key]) {
