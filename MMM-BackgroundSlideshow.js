@@ -543,6 +543,7 @@ Module.register('MMM-BackgroundSlideshow', {
             if (lat && lon && latRef && lonRef) {
               const hashBuffer = await crypto.subtle.digest('sha-1', image);
               const hash = Buffer.from(hashBuffer).toString('hex');
+              Log.info(`Image hash: ${hash}`);
               this.sendSocketNotification(
                 'BACKGROUNDSLIDESHOW_REVERSE_GEOCODE',
                 {
