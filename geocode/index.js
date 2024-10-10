@@ -66,6 +66,7 @@ const fetchFromLocalCache = (data, modulePath) => {
   );
   const hashResult = hashQuery.get(data.hash);
   if (hashResult && hashResult.description) {
+    Log.info('HIT on hash!');
     return hashResult.description;
   }
 
