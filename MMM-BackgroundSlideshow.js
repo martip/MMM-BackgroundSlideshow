@@ -517,7 +517,7 @@ Module.register('MMM-BackgroundSlideshow', {
         }
       }
 
-      EXIF.getData(image, () => {
+      EXIF.getData(image, async () => {
         if (this.config.showImageInfo) {
           let dateTime = EXIF.getTag(image, 'DateTimeOriginal');
           // attempt to parse the date if possible
@@ -541,17 +541,16 @@ Module.register('MMM-BackgroundSlideshow', {
             const lonRef = EXIF.getTag(image, 'GPSLongitudeRef');
             // Only display the location if we have both longitute and lattitude
             if (lat && lon && latRef && lonRef) {
-              crypto.subtle.digest('sha-1', image).then((hashBuffer) => {
-                const hash = Buffer.from(hashBuffer).toString('hex');
-                this.sendSocketNotification(
-                  'BACKGROUNDSLIDESHOW_REVERSE_GEOCODE',
-                  {
-                    latitude: { reference: latRef, values: lat },
-                    longitude: { reference: lonRef, values: lon },
-                    hash
-                  }
-                );
-              });
+              const hashBuffer = await crypto.subtle.digest('sha-1', image);
+              const hash = Buffer.from(hashBuffer).toString('hex');
+              this.sendSocketNotification(
+                'BACKGROUNDSLIDESHOW_REVERSE_GEOCODE',
+                {
+                  latitude: { reference: latRef, values: lat },
+                  longitude: { reference: lonRef, values: lon },
+                  hash
+                }
+              );
             }
           }
           this.updateImageInfo(imageinfo, dateTime);
