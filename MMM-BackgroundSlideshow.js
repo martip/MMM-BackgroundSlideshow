@@ -541,7 +541,11 @@ Module.register('MMM-BackgroundSlideshow', {
             const lonRef = EXIF.getTag(image, 'GPSLongitudeRef');
             // Only display the location if we have both longitute and lattitude
             if (lat && lon && latRef && lonRef) {
-              const hashBuffer = await crypto.subtle.digest('sha-1', image);
+              const imageBuffer = new Uint8Array(image);
+              const hashBuffer = await crypto.subtle.digest(
+                'sha-1',
+                imageBuffer
+              );
               const hash = Buffer.from(hashBuffer).toString('hex');
               Log.info(`Image hash: ${hash}`);
               this.sendSocketNotification(
