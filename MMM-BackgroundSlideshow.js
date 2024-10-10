@@ -517,7 +517,7 @@ Module.register('MMM-BackgroundSlideshow', {
         }
       }
 
-      await EXIF.getData(image, async () => {
+      EXIF.getData(image, async () => {
         if (this.config.showImageInfo) {
           let dateTime = EXIF.getTag(image, 'DateTimeOriginal');
           // attempt to parse the date if possible
