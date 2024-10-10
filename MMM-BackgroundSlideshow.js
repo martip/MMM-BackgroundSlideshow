@@ -631,7 +631,9 @@ Module.register('MMM-BackgroundSlideshow', {
       switch (prop) {
         case 'date':
           if (imageDate && imageDate !== 'Invalid date') {
-            imageProps.push(imageDate);
+            imageProps.push(
+              `${this.getIcon('calendar', 'dimmed')} ${imageDate}`
+            );
           }
           break;
 
@@ -665,7 +667,7 @@ Module.register('MMM-BackgroundSlideshow', {
             .split('/')
             .slice(-2)[0]
             .replace(/\d{4}\-\d{2}\-\d{2} \- /, '');
-          imageProps.push(albumName);
+          imageProps.push(`${this.getIcon('book', 'dimmed')} ${albumName}`);
           break;
         case 'imagecount':
           imageProps.push(`${imageinfo.index} of ${imageinfo.total}`);
