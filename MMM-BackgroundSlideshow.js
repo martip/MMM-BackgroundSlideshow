@@ -541,9 +541,8 @@ Module.register('MMM-BackgroundSlideshow', {
             const lonRef = EXIF.getTag(image, 'GPSLongitudeRef');
             // Only display the location if we have both longitute and lattitude
             if (lat && lon && latRef && lonRef) {
-              Log.info(image.src);
               const imageBuffer = Uint8Array.from(
-                atob(image.src.split(', ')[1]),
+                atob(image.src.split(',')[1].trim()),
                 (c) => c.charCodeAt(0)
               );
               const hashBuffer = await crypto.subtle.digest(
