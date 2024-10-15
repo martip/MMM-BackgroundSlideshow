@@ -526,7 +526,7 @@ Module.register('MMM-BackgroundSlideshow', {
             try {
               dt = moment(dt, 'YYYY:MM:DD HH:mm:ss');
               dateTime = dt.format('dddd D MMMM YYYY HH:mm');
-              date = dt.format('dddd D MMMM YYYY');
+              date = dt.format('D MMMM YYYY');
               time = dt.format('HH:mm');
             } catch (e) {
               Log.log(
