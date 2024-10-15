@@ -160,12 +160,8 @@
 .MMM-BackgroundSlideshow .infoDivHeader {
     text-transform: uppercase;
     font-size: 0.75rem;
-    font-family: 'Roboto Condensed', Arial, Helvetica, sans-serif;
-    font-weight: 400;
-    line-height: 1rem;
-    padding-bottom: 0.125rem;
-    margin-bottom: 0.25rem
-    color: #999;
+    color: var(--color-text-dimmed);
+    text-align: right;
 }
 
 .MMM-BackgroundSlideshow .bottomLeft {
@@ -180,6 +176,7 @@
     right: 0pt;
     border-width: 1pt 0 0 1pt;
     border-top-left-radius: 20pt;
+    text-align: right;
 }
 
 .MMM-BackgroundSlideshow .topRight {

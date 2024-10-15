@@ -246,7 +246,7 @@ Module.register('MMM-BackgroundSlideshow', {
       }
     } else if (notification === 'BACKGROUNDSLIDESHOW_DISPLAY_LOCATION') {
       const locationInfoSpan = document.getElementById('geocode_location');
-      locationInfoSpan.innerHTML = `${this.getIcon('map-pin', 'dimmed')} ${payload}`;
+      locationInfoSpan.innerHTML = `${payload} ${this.getIcon('map-pin', 'dimmed')}`;
     } else if (notification === 'BACKGROUNDSLIDESHOW_FILELIST') {
       // bubble up filelist notifications
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_FILELIST', payload);
@@ -519,12 +519,15 @@ Module.register('MMM-BackgroundSlideshow', {
 
       await EXIF.getData(image, async () => {
         if (this.config.showImageInfo) {
-          let dateTime = EXIF.getTag(image, 'DateTimeOriginal');
+          let dt = EXIF.getTag(image, 'DateTimeOriginal');
+          let dateTime, date, time;
           // attempt to parse the date if possible
-          if (dateTime !== null) {
+          if (dt !== null) {
             try {
-              dateTime = moment(dateTime, 'YYYY:MM:DD HH:mm:ss');
-              dateTime = dateTime.format('dddd D MMMM YYYY HH:mm');
+              dt = moment(dt, 'YYYY:MM:DD HH:mm:ss');
+              dateTime = dt.format('dddd D MMMM YYYY HH:mm');
+              date = dt.format('dddd D MMMM YYYY');
+              time = dt.format('HH:mm');
             } catch (e) {
               Log.log(
                 `Failed to parse dateTime: ${
@@ -532,6 +535,8 @@ Module.register('MMM-BackgroundSlideshow', {
                 } to format YYYY:MM:DD HH:mm:ss`
               );
               dateTime = '';
+              date = '';
+              time = '';
             }
           }
           if (this.config.imageInfo.includes('geo')) {
@@ -563,7 +568,7 @@ Module.register('MMM-BackgroundSlideshow', {
               );
             }
           }
-          this.updateImageInfo(imageinfo, dateTime);
+          this.updateImageInfo(imageinfo, dateTime, date, time);
         }
 
         if (!this.browserSupportsExifOrientationNatively) {
@@ -639,15 +644,29 @@ Module.register('MMM-BackgroundSlideshow', {
     }
   },
 
-  updateImageInfo(imageinfo, imageDate) {
+  updateImageInfo(imageinfo, imageDateTime, imageDate, imageTime) {
     const imageProps = [];
     this.config.imageInfo.forEach((prop) => {
       switch (prop) {
+        case 'datetime':
+          if (imageDateTime && imageDateTime !== 'Invalid date') {
+            imageProps.push(
+              `${imageDateTime} ${this.getIcon('calendar', 'dimmed')}`
+            );
+          }
+          break;
+
         case 'date':
           if (imageDate && imageDate !== 'Invalid date') {
             imageProps.push(
-              `${this.getIcon('calendar', 'dimmed')} ${imageDate}`
+              `${imageDate} ${this.getIcon('calendar', 'dimmed')}`
             );
+          }
+          break;
+
+        case 'time':
+          if (imageTime && imageTime !== 'Invalid time') {
+            imageProps.push(`${imageTime} ${this.getIcon('clock', 'dimmed')}`);
           }
           break;
 
@@ -681,7 +700,7 @@ Module.register('MMM-BackgroundSlideshow', {
             .split('/')
             .slice(-2)[0]
             .replace(/\d{4}\-\d{2}\-\d{2} \- /, '');
-          imageProps.push(`${this.getIcon('book', 'dimmed')} ${albumName}`);
+          imageProps.push(` ${albumName} ${this.getIcon('book', 'dimmed')}`);
           break;
         case 'imagecount':
           imageProps.push(`${imageinfo.index} of ${imageinfo.total}`);
