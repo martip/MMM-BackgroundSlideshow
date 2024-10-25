@@ -200,6 +200,8 @@ Module.register('MMM-BackgroundSlideshow', {
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_PAUSE');
     } else if (notification === 'BACKGROUNDSLIDESHOW_PLAY') {
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_PLAY');
+    } else if (notification === 'BACKGROUNDSLIDESHOW_CONTROL') {
+      this.sendSocketNotification('BACKGROUNDSLIDESHOW_CONTROL');
     }
   },
   // the socket handler from node_helper.js
