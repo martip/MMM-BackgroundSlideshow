@@ -362,6 +362,20 @@ module.exports = NodeHelper.create({
       this.stopTimer();
     } else if (notification === 'BACKGROUNDSLIDESHOW_PLAY') {
       this.startOrRestartTimer();
+    } else if (notification === 'BACKGROUNDSLIDESHOW_CONTROL') {
+      if (payload) {
+        if (payload === 'on') {
+          this.startOrRestartTimer();
+        } else if (payload === 'off') {
+          this.stopTimer();
+        } else if (payload === 'toggle') {
+          if (this.timer) {
+            this.stopTimer();
+          } else {
+            this.startOrRestartTimer();
+          }
+        }
+      }
     } else if (notification === 'BACKGROUNDSLIDESHOW_REVERSE_GEOCODE') {
       this.getReverseGeocodeInfo(payload, (description) => {
         if (description) {
