@@ -363,6 +363,8 @@ module.exports = NodeHelper.create({
     } else if (notification === 'BACKGROUNDSLIDESHOW_PLAY') {
       this.startOrRestartTimer();
     } else if (notification === 'BACKGROUNDSLIDESHOW_CONTROL') {
+      Log.info('BACKGROUNDSLIDESHOW_CONTROL');
+      Log.info(JSON.stringify(payload, null, 2));
       if (payload) {
         if (payload === 'on') {
           this.startOrRestartTimer();
