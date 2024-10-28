@@ -363,10 +363,6 @@ module.exports = NodeHelper.create({
     } else if (notification === 'BACKGROUNDSLIDESHOW_PLAY') {
       this.startOrRestartTimer();
     } else if (notification === 'BACKGROUNDSLIDESHOW_CONTROL') {
-      Log.log(
-        `Notification Received: BACKGROUNDSLIDESHOW_CONTROL. Payload: ${JSON.stringify(payload)}`
-      );
-
       if (payload) {
         if (payload === 'on') {
           this.startOrRestartTimer();
@@ -374,6 +370,7 @@ module.exports = NodeHelper.create({
           this.stopTimer();
         }
       }
+      this.sendSocketNotification('BACKGROUNDSLIDESHOW_CONTROL', payload);
     } else if (notification === 'BACKGROUNDSLIDESHOW_REVERSE_GEOCODE') {
       this.getReverseGeocodeInfo(payload, (description) => {
         if (description) {

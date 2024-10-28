@@ -286,13 +286,13 @@ Module.register('MMM-BackgroundSlideshow', {
       );
 
       // this.sendSocketNotification('BACKGROUNDSLIDESHOW_CONTROL', payload);
-      // if (payload) {
-      //   if (payload === 'on' && this.timer) {
-      //     this.resume();
-      //   } else if (payload === 'off') {
-      //     this.suspend();
-      //   }
-      // }
+      if (payload) {
+        if (payload === 'on' && this.timer) {
+          this.resume();
+        } else if (payload === 'off') {
+          this.suspend();
+        }
+      }
     } else if (notification === 'BACKGROUNDSLIDESHOW_URL') {
       if (payload && payload.url) {
         // Stop timer.
