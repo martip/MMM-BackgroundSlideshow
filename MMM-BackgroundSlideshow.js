@@ -201,9 +201,6 @@ Module.register('MMM-BackgroundSlideshow', {
     } else if (notification === 'BACKGROUNDSLIDESHOW_PLAY') {
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_PLAY');
     } else if (notification === 'BACKGROUNDSLIDESHOW_CONTROL') {
-      Log.log(
-        `Notification Received: BACKGROUNDSLIDESHOW_CONTROL. Payload: ${JSON.stringify(payload)}`
-      );
       if (payload) {
         if (payload === 'on') {
           this.sendSocketNotification('BACKGROUNDSLIDESHOW_PLAY');
@@ -246,6 +243,8 @@ Module.register('MMM-BackgroundSlideshow', {
       // Update config in backend
       this.updateImageList();
     } else if (notification === 'BACKGROUNDSLIDESHOW_PLAY') {
+      Log.log(`Notification Received: BACKGROUNDSLIDESHOW_PLAY #247`);
+
       // Change to next image and start timer.
       this.updateImage();
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_PLAY');
@@ -289,6 +288,8 @@ Module.register('MMM-BackgroundSlideshow', {
         this.resume();
       }
     } else if (notification === 'BACKGROUNDSLIDESHOW_PAUSE') {
+      Log.log(`Notification Received: BACKGROUNDSLIDESHOW_PAUSE #294`);
+
       // Stop timer.
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_PAUSE');
     } else if (notification === 'BACKGROUNDSLIDESHOW_URL') {
