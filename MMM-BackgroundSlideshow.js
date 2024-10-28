@@ -284,7 +284,7 @@ Module.register('MMM-BackgroundSlideshow', {
       if (payload) {
         if (payload === 'on' && this.timer) {
           this.resume();
-        } else if (payload === 'off' &&) {
+        } else if (payload === 'off') {
           this.suspend();
         }
       }
