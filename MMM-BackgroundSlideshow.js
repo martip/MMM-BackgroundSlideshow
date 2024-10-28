@@ -201,7 +201,18 @@ Module.register('MMM-BackgroundSlideshow', {
     } else if (notification === 'BACKGROUNDSLIDESHOW_PLAY') {
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_PLAY');
     } else if (notification === 'BACKGROUNDSLIDESHOW_CONTROL') {
-      this.sendSocketNotification('BACKGROUNDSLIDESHOW_CONTROL', payload);
+      Log.log(
+        `Notification Received: BACKGROUNDSLIDESHOW_CONTROL. Payload: ${JSON.stringify(payload)}`
+      );
+      if (payload) {
+        if (payload === 'on') {
+          this.sendSocketNotification('BACKGROUNDSLIDESHOW_PLAY');
+          // this.resume();
+        } else if (payload === 'off') {
+          this.sendSocketNotification('BACKGROUNDSLIDESHOW_PAUSE');
+          // this.suspend();
+        }
+      }
     }
   },
   // the socket handler from node_helper.js
@@ -280,17 +291,6 @@ Module.register('MMM-BackgroundSlideshow', {
     } else if (notification === 'BACKGROUNDSLIDESHOW_PAUSE') {
       // Stop timer.
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_PAUSE');
-    } else if (notification === 'BACKGROUNDSLIDESHOW_CONTROL') {
-      // Log.log(
-      //   `Notification Received: BACKGROUNDSLIDESHOW_CONTROL. Payload: ${JSON.stringify(payload)}`
-      // );
-      // if (payload) {
-      //   if (payload === 'on') {
-      //     this.resume();
-      //   } else if (payload === 'off') {
-      //     this.suspend();
-      //   }
-      // }
     } else if (notification === 'BACKGROUNDSLIDESHOW_URL') {
       if (payload && payload.url) {
         // Stop timer.
