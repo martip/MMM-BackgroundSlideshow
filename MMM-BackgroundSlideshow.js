@@ -281,13 +281,14 @@ Module.register('MMM-BackgroundSlideshow', {
       // Stop timer.
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_PAUSE');
     } else if (notification === 'BACKGROUNDSLIDESHOW_CONTROL') {
-      if (payload) {
-        if (payload === 'on' && this.timer) {
-          this.resume();
-        } else if (payload === 'off') {
-          this.suspend();
-        }
-      }
+      this.sendSocketNotification('BACKGROUNDSLIDESHOW_CONTROL', payload);
+      // if (payload) {
+      //   if (payload === 'on' && this.timer) {
+      //     this.resume();
+      //   } else if (payload === 'off') {
+      //     this.suspend();
+      //   }
+      // }
     } else if (notification === 'BACKGROUNDSLIDESHOW_URL') {
       if (payload && payload.url) {
         // Stop timer.
