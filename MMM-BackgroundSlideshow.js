@@ -287,7 +287,7 @@ Module.register('MMM-BackgroundSlideshow', {
 
       // this.sendSocketNotification('BACKGROUNDSLIDESHOW_CONTROL', payload);
       if (payload) {
-        if (payload === 'on' && this.timer) {
+        if (payload === 'on') {
           this.resume();
         } else if (payload === 'off') {
           this.suspend();
