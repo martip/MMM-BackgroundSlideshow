@@ -363,14 +363,14 @@ module.exports = NodeHelper.create({
     } else if (notification === 'BACKGROUNDSLIDESHOW_PLAY') {
       this.startOrRestartTimer();
     } else if (notification === 'BACKGROUNDSLIDESHOW_CONTROL') {
-      if (payload) {
-        if (payload === 'on') {
-          this.startOrRestartTimer();
-        } else if (payload === 'off') {
-          this.stopTimer();
-        }
-      }
-      this.sendSocketNotification('BACKGROUNDSLIDESHOW_CONTROL', payload);
+      // if (payload) {
+      //   if (payload === 'on') {
+      //     this.startOrRestartTimer();
+      //   } else if (payload === 'off') {
+      //     this.stopTimer();
+      //   }
+      // }
+      // this.sendSocketNotification('BACKGROUNDSLIDESHOW_CONTROL', payload);
     } else if (notification === 'BACKGROUNDSLIDESHOW_REVERSE_GEOCODE') {
       this.getReverseGeocodeInfo(payload, (description) => {
         if (description) {

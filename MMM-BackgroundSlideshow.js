@@ -281,18 +281,16 @@ Module.register('MMM-BackgroundSlideshow', {
       // Stop timer.
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_PAUSE');
     } else if (notification === 'BACKGROUNDSLIDESHOW_CONTROL') {
-      Log.log(
-        `Notification Received: BACKGROUNDSLIDESHOW_CONTROL. Payload: ${JSON.stringify(payload)}`
-      );
-
-      // this.sendSocketNotification('BACKGROUNDSLIDESHOW_CONTROL', payload);
-      if (payload) {
-        if (payload === 'on') {
-          this.resume();
-        } else if (payload === 'off') {
-          this.suspend();
-        }
-      }
+      // Log.log(
+      //   `Notification Received: BACKGROUNDSLIDESHOW_CONTROL. Payload: ${JSON.stringify(payload)}`
+      // );
+      // if (payload) {
+      //   if (payload === 'on') {
+      //     this.resume();
+      //   } else if (payload === 'off') {
+      //     this.suspend();
+      //   }
+      // }
     } else if (notification === 'BACKGROUNDSLIDESHOW_URL') {
       if (payload && payload.url) {
         // Stop timer.
