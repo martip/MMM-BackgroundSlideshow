@@ -282,9 +282,9 @@ Module.register('MMM-BackgroundSlideshow', {
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_PAUSE');
     } else if (notification === 'BACKGROUNDSLIDESHOW_CONTROL') {
       if (payload) {
-        if (payload === 'on') {
+        if (payload === 'on' && this.timer) {
           this.resume();
-        } else if (payload === 'off') {
+        } else if (payload === 'off' &&) {
           this.suspend();
         }
       }
