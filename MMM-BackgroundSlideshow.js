@@ -197,23 +197,11 @@ Module.register('MMM-BackgroundSlideshow', {
     } else if (notification === 'BACKGROUNDSLIDESHOW_PREV') {
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_PREV_IMAGE');
     } else if (notification === 'BACKGROUNDSLIDESHOW_PAUSE') {
-      Log.log(`Notification Received: BACKGROUNDSLIDESHOW_PAUSE #199`);
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_PAUSE');
     } else if (notification === 'BACKGROUNDSLIDESHOW_PLAY') {
-      Log.log(`Notification Received: BACKGROUNDSLIDESHOW_PLAY #201`);
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_PLAY');
     } else if (notification === 'BACKGROUNDSLIDESHOW_CONTROL') {
-      Log.log(`Notification Received: BACKGROUNDSLIDESHOW_CONTROL #203`);
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_CONTROL', payload);
-      // if (payload) {
-      //   if (payload === 'on') {
-      //     this.sendSocketNotification('BACKGROUNDSLIDESHOW_PLAY');
-      //     // this.resume();
-      //   } else if (payload === 'off') {
-      //     this.sendSocketNotification('BACKGROUNDSLIDESHOW_PAUSE');
-      //     // this.suspend();
-      //   }
-      // }
     }
   },
   // the socket handler from node_helper.js
@@ -247,8 +235,6 @@ Module.register('MMM-BackgroundSlideshow', {
       // Update config in backend
       this.updateImageList();
     } else if (notification === 'BACKGROUNDSLIDESHOW_PLAY') {
-      Log.log(`Socket Notification Received: BACKGROUNDSLIDESHOW_PLAY #247`);
-
       // Change to next image and start timer.
       this.updateImage();
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_PLAY');
@@ -292,8 +278,6 @@ Module.register('MMM-BackgroundSlideshow', {
         this.resume();
       }
     } else if (notification === 'BACKGROUNDSLIDESHOW_PAUSE') {
-      Log.log(`Socket Notification Received: BACKGROUNDSLIDESHOW_PAUSE #294`);
-
       // Stop timer.
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_PAUSE');
     } else if (notification === 'BACKGROUNDSLIDESHOW_URL') {
