@@ -359,8 +359,10 @@ module.exports = NodeHelper.create({
       Log.info('BACKGROUNDSLIDESHOW_PREV_IMAGE');
       this.getPrevImage();
     } else if (notification === 'BACKGROUNDSLIDESHOW_PAUSE') {
+      Log.log(`Socket Notification Received: BACKGROUNDSLIDESHOW_PAUSE #361`);
       this.stopTimer();
     } else if (notification === 'BACKGROUNDSLIDESHOW_PLAY') {
+      Log.log(`Socket Notification Received: BACKGROUNDSLIDESHOW_PLAY #364`);
       this.startOrRestartTimer();
     } else if (notification === 'BACKGROUNDSLIDESHOW_REVERSE_GEOCODE') {
       this.getReverseGeocodeInfo(payload, (description) => {
