@@ -364,6 +364,17 @@ module.exports = NodeHelper.create({
     } else if (notification === 'BACKGROUNDSLIDESHOW_PLAY') {
       Log.log(`Socket Notification Received: BACKGROUNDSLIDESHOW_PLAY #364`);
       this.startOrRestartTimer();
+    } else if (notification === 'BACKGROUNDSLIDESHOW_CONTROL') {
+      Log.log(`Socket Notification Received: BACKGROUNDSLIDESHOW_CONTROL #367`);
+      Log.log(`Payload: ${JSON.stringify(payload, null, 2)}`);
+      Log.log(`Timer: ${JSON.stringify(timer, null, 2)}`);
+      if (payload) {
+        if (payload === 'on' && !this.timer) {
+          this.sendSocketNotification('BACKGROUNDSLIDESHOW_PLAY');
+        } else if (payload === 'off' && this.timer) {
+          this.sendSocketNotification('BACKGROUNDSLIDESHOW_PAUSE');
+        }
+      }
     } else if (notification === 'BACKGROUNDSLIDESHOW_REVERSE_GEOCODE') {
       this.getReverseGeocodeInfo(payload, (description) => {
         if (description) {
