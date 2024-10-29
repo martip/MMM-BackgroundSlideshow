@@ -204,12 +204,11 @@ Module.register('MMM-BackgroundSlideshow', {
       this.sendSocketNotification('BACKGROUNDSLIDESHOW_PLAY');
     } else if (notification === 'BACKGROUNDSLIDESHOW_CONTROL') {
       Log.log(`Notification Received: BACKGROUNDSLIDESHOW_CONTROL #203`);
-
       if (payload) {
-        if (payload === 'on') {
+        if (payload === 'on' && !this.timer) {
           this.sendSocketNotification('BACKGROUNDSLIDESHOW_PLAY');
           // this.resume();
-        } else if (payload === 'off') {
+        } else if (payload === 'off' && this.timer) {
           this.sendSocketNotification('BACKGROUNDSLIDESHOW_PAUSE');
           // this.suspend();
         }
